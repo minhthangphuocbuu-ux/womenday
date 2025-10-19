@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Women's Day — Interactive Card</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Lightweight icons (optional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <meta name="description" content="An accessible, responsive, animated interactive Women's Day card." />
+
+  <style>
+    :root{
+      --bg: #fdeef0;
+      --primary: #e85a75;
+      --accent: #f6a5a0;
+      --leaf: #3b7a57;
+      --text: #2a2a2a;
+      --card: #fff6f6;
+      --shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    /* Reset-ish */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg) 0%, #fff 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2rem;
+    }
+
+    /* Main layout */
+    .stage{
+      width:min(1100px, 96vw);
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:2rem;
+      align-items:center;
+    }
+
+    @media (max-width:900px){
+      .stage{grid-template-columns: 1fr; padding:0}
+    }
+
+    /* Left: SVG rose with animated text */
+    .scene{
+      background:transparent;
+      border-radius:14px;
+      padding:1rem;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:visible;
+    }
+
+    svg.rose{
+      width:100%;
+      max-width:620px;
+      height:auto;
+      display:block;
+    }
+
+    /* Text-on-path styling */
+    .w-path text{
+      font-family:'Dancing Script', cursive;
+      font-size:20px;
+      fill:var(--primary);
+      letter-spacing:0.8px;
+    }
+
+    /* Path reveal animation (stroke dash) */
+    .draw-path{
+      stroke:var(--accent);
+      stroke-width:2;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      stroke-opacity:0.8;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: reveal 2.4s ease forwards 0.2s;
+    }
+
+    @keyframes reveal{
+      to{ stroke-dashoffset:0; }
+    }
+
+    /* Right: Card / envelope */
+    .card-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
+      align-items:stretch;
+      justify-content:flex-start;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:16px;
+      padding:1.25rem;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card .title{
+      font-family:'Dancing Script', cursive;
+      font-size:1.6rem;
+      color:var(--primary);
+      margin:0 0 0.25rem;
+    }
+
+    .card p.lead{
+      margin:0 0 1rem;
+      color:#4a4a4a;
+      line-height:1.4;
+    }
+
+    /* Envelope (clickable) */
+    .envelope {
+      width:100%;
+      max-width:360px;
+      height:220px;
+      margin:0 auto;
+      perspective:1000px;
+    }
+
+    .env-inner{
+      width:100%;
+      height:100%;
+      transform-style:preserve-3d;
+      transition:transform 800ms cubic-bezier(.2,.9,.3,1);
+      position:relative;
+    }
+
+    .env-front, .env-back{
+      position:absolute;
+      inset:0;
+      border-radius:12px;
+      backface-visibility:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+    }
+
+    .env-front{
+      background:linear-gradient(180deg,var(--accent),#ffd6da);
+      transform-origin:top;
+      z-index:2;
+    }
+
+    .env-back{
+      background:linear-gradient(180deg,#fff,#fff1f3);
+      transform:rotateX(180deg);
+      padding:1rem;
+    }
+
+    /* opened state */
+    .envelope.open .env-inner{ transform: rotateX(180deg); }
+
+    .envelope .seal{
+      position:absolute;
+      left:50%;
+      top:54%;
+      transform:translate(-50%,-50%);
+      width:66px;
+      height:66px;
+      border-radius:50%;
+      background:var(--primary);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      box-shadow:0 6px 18px rgba(232,90,117,0.28);
+    }
+
+    /* Message inside */
+    .message{
+      text-align:center;
+      padding:0.5rem 1rem;
+    }
+    .message h3{
+      margin:0;
+      font-family:'Dancing Script', cursive;
+      color:var(--primary);
+      font-size:1.4rem;
+    }
+    .message p{
+      margin:0.5rem 0 0;
+      color:#444;
+      font-size:0.95rem;
+    }
+
+    /* CTA */
+    .controls{
+      display:flex;
+      gap:0.5rem;
+      align-items:center;
+      justify-content:flex-end;
+      margin-top:0.5rem;
+    }
+    button.btn{
+      border:0;
+      padding:0.6rem 0.9rem;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:0.95rem;
+      background:var(--primary);
+      color:white;
+      box-shadow: 0 6px 18px rgba(232,90,117,0.18);
+    }
+    button.btn.secondary{
+      background:#fff;
+      color:var(--primary);
+      border:1px solid rgba(232,90,117,0.12);
+      box-shadow:none;
+    }
+
+    /* small hint */
+    .hint{
+      text-align:center;
+      font-size:0.85rem;
+      color:#8b8b8b;
+      margin-top:0.35rem;
+    }
+
+    /* floating hearts (subtle) */
+    .hearts{
+      position:absolute;
+      pointer-events:none;
+      inset:auto 0 12% 0;
+      display:flex;
+      justify-content:center;
+      gap:1rem;
+      opacity:0.9;
+    }
+    .heart{
+      width:22px;height:22px;background:var(--primary);
+      transform:rotate(-45deg);
+      position:relative;border-radius:3px;
+      animation: floatUp 3.5s linear infinite;
+    }
+    .heart:before,.heart:after{
+      content:"";position:absolute;background:var(--primary);
+      width:22px;height:22px;border-radius:50%;
+    }
+    .heart:before{ top:-11px; left:0;}
+    .heart:after{ left:11px; top:0;}
+    .heart:nth-child(2){ animation-delay:0.6s; transform-origin:center;}
+    .heart:nth-child(3){ animation-delay:1.2s;}
+    @keyframes floatUp{
+      0%{ transform:translateY(0) rotate(-45deg) scale(0.95); opacity:0.8}
+      50%{ transform:translateY(-26px) rotate(-45deg) scale(1.05); opacity:1}
+      100%{ transform:translateY(-52px) rotate(-45deg) scale(0.95); opacity:0}
+    }
+
+    /* Accessibility: respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .draw-path, .env-inner, .heart{ animation:none !important; transition:none !important }
+    }
+
+    /* Small utility */
+    .sr-only{ position:absolute!important; width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0 }
+  </style>
+</head>
+<body>
+
+  <main class="stage" id="main">
+    <!-- Left: Rose + text -->
+    <section class="scene" aria-labelledby="scene-title">
+      <svg class="rose" viewBox="0 0 512 512" role="img" aria-labelledby="scene-title desc">
+        <title id="scene-title">Animated rose with greeting</title>
+        <desc id="desc">An illustrated rose with a decorative text path saying Happy Women's Day</desc>
+
+        <!-- Subtle decorative path drawn first -->
+        <g class="w-path" transform="translate(20,10) scale(0.9)">
+          <!-- A soft decorative outline (draw animation) -->
+          <path class="draw-path" d="M256 60
+              C 340 20, 460 80, 460 170
+              C 460 300, 340 380, 256 420
+              C 172 380, 52 300, 52 170
+              C 52 80, 172 20, 256 60 Z" />
+
+          <!-- Main rose simplified (kept light) -->
+          <g transform="translate(0,20)">
+            <circle cx="256" cy="170" r="74" fill="#ff6f82" opacity="0.95"></circle>
+            <path d="M230 120 C220 140 220 180 256 200 C292 180 292 140 282 120 C270 100 240 100 230 120 Z"
+                  fill="#ffe6ec" opacity="0.25"></path>
+            <path d="M160 260 C200 200 320 200 352 260 C360 280 258 320 256 320 C254 320 150 280 160 260 Z"
+                  fill="#3b7a57" opacity="0.9"></path>
+          </g>
+
+          <!-- Text on path -->
+          <defs>
+            <path id="greetPath" d="M98 200
+              C 114 118, 188 110, 256 132
+              C 324 114, 398 118, 414 200" />
+          </defs>
+
+          <text aria-hidden="true">
+            <textPath href="#greetPath" startOffset="0" dominant-baseline="middle">
+              🌹 Happy Women's Day — With Love 🌹 • Celebrate • Appreciate • Empower •
+            </textPath>
+          </text>
+        </g>
+
+      </svg>
+
+      <!-- Decorative floating hearts -->
+      <div class="hearts" aria-hidden="true">
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+      </div>
+    </section>
+
+    <!-- Right: Envelope / Card -->
+    <aside class="card-wrap" aria-labelledby="card-title" role="region">
+      <div class="card" role="article" aria-labelledby="card-title">
+        <h2 id="card-title" class="title">Happy Women's Day</h2>
+        <p class="lead">A small interactive card. Click the envelope to open and reveal a short message.</p>
+
+        <!-- Envelope -->
+        <div class="envelope" id="envelope" aria-live="polite" aria-expanded="false">
+          <div class="env-inner" id="envInner" role="button" tabindex="0" aria-pressed="false" aria-label="Open envelope">
+            <!-- front flap -->
+            <div class="env-front" aria-hidden="false">
+              <svg width="100%" height="100%" viewBox="0 0 360 220" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="f1" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" stop-color="#ffd6da"></stop>
+                    <stop offset="1" stop-color="#ff9fac"></stop>
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="360" height="220" rx="12" ry="12" fill="url(#f1)"></rect>
+                <!-- flap -->
+                <path d="M0 0 L180 115 L360 0 Z" fill="#f47c7c" opacity="0.95"></path>
+              </svg>
+              <div class="seal" aria-hidden="true">❤</div>
+            </div>
+
+            <!-- inside back of envelope (message area) -->
+            <div class="env-back" aria-hidden="true">
+              <div class="message" id="message">
+                <h3>To all wonderful women</h3>
+                <p id="message-text">Thank you for your strength, kindness and inspiration — today and every day. Shine on ✨</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls" aria-hidden="false">
+          <button class="btn" id="btn-open" type="button" aria-controls="envelope">Open</button>
+          <button class="btn secondary" id="btn-reset" type="button">Reset</button>
+        </div>
+
+        <div class="hint" id="hint">Tip: Press Enter/Space on the envelope to open it as well.</div>
+      </div>
+
+      <!-- small credit / accessible text -->
+      <div style="font-size:13px;color:#777;padding-left:0.25rem">
+        <span class="sr-only">This card is built with accessible HTML, CSS and vanilla JavaScript.</span>
+        <small aria-hidden="true">Made with care — 20/10</small>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // Minimal, dependency-free interactions and progressive enhancement
+    (function(){
+      const envelope = document.getElementById('envelope');
+      const envInner = document.getElementById('envInner');
+      const btnOpen = document.getElementById('btn-open');
+      const btnReset = document.getElementById('btn-reset');
+      const hint = document.getElementById('hint');
+
+      const openState = () => envelope.classList.add('open');
+      const closeState = () => envelope.classList.remove('open');
+
+      function setAriaOpen(open){
+        envelope.setAttribute('aria-expanded', String(!!open));
+        envInner.setAttribute('aria-pressed', String(!!open));
+        envInner.setAttribute('aria-label', open ? 'Close envelope' : 'Open envelope');
+      }
+
+      // Toggle function
+      function toggle(e){
+        const isOpen = envelope.classList.contains('open');
+        if(isOpen){
+          closeState();
+          setAriaOpen(false);
+          btnOpen.textContent = 'Open';
+        } else {
+          openState();
+          setAriaOpen(true);
+          btnOpen.textContent = 'Close';
+          // After opening, optionally focus message for screen readers
+          const msg = document.getElementById('message');
+          if(msg && 'focus' in msg) msg.focus();
+        }
+      }
+
+      // Button handlers
+      btnOpen.addEventListener('click', toggle);
+      btnReset.addEventListener('click', () => {
+        closeState();
+        setAriaOpen(false);
+        btnOpen.textContent = 'Open';
+      });
+
+      // Make the envelope itself keyboard accessible
+      envInner.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Enter' || ev.key === ' '){
+          ev.preventDefault();
+          toggle();
+        }
+      });
+      // Click on env toggles
+      envInner.addEventListener('click', toggle);
+
+      // Small animation hint removal after first interaction
+      const removeHint = () => {
+        hint.style.opacity = 0.6;
+        setTimeout(()=> hint.style.opacity = 1, 400);
+      };
+      envInner.addEventListener('mouseenter', removeHint);
+
+      // Improve path drawing animation timing: ensure it's visible after load
+      window.addEventListener('load', () => {
+        // no-op: CSS handles reveal. But we can reduce motion when prefers-reduced-motion is set.
+        if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+          document.querySelectorAll('.draw-path').forEach(p => {
+            p.style.animation = 'none';
+            p.style.strokeDashoffset = 0;
+          });
+        }
+      });
+
+      // For accessibility: announce when opened (aria-live)
+      const live = envelope;
+      const observer = new MutationObserver(mutations => {
+        for(const mut of mutations){
+          if(mut.attributeName === 'class'){
+            const opened = envelope.classList.contains('open');
+            live.setAttribute('aria-live','polite');
+            // Add a short timeout so screen readers pick up the change.
+            setTimeout(() => {
+              live.setAttribute('aria-label', opened ? 'Envelope opened, message revealed' : 'Envelope closed');
+            }, 100);
+          }
+        }
+      });
+      observer.observe(envelope, { attributes: true });
+
+    })();
+  </script>
+
+</body>
+</html>
